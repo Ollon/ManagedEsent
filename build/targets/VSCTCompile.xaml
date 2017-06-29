@@ -1,0 +1,71 @@
+<Rule
+    xmlns="http://schemas.microsoft.com/build/2009/properties"
+    Name="VSCTCompile"
+    Description="Visual Studio Command Table"
+    DisplayName="Command Table (.vsct)"
+    FileExtension=".vsct"
+    PageTemplate="generic">
+    <Rule.DataSource>
+        <DataSource
+            HasConfigurationCondition="False"
+            ItemType="VSCTCompile"
+            Persistence="ProjectFile" />
+    </Rule.DataSource>
+
+    <Rule.Categories>
+        <Category Name="General" DisplayName="General" />
+        <Category Name="Advanced" DisplayName="Advanced" />
+    </Rule.Categories>
+
+    <StringProperty
+        Name="ResourceName"
+        Category="VSIX"
+        Default="Menus.ctmenu"
+        Description="The name of the resource. Usually 'Menus.ctmenu'."
+        DisplayName="Resource Name"
+        IsRequired="True"
+        Visible="True" />
+
+    <BoolProperty
+        Name="Pack"
+        Category="NuGet"
+        Default="False"
+        Description="Should the build process pack this file when building nuget packages?"
+        DisplayName="Include in NuGet Package" />
+    <StringProperty
+        Name="PackagePath"
+        Category="NuGet"
+        Default=""
+        Description="Path to lay the file in the resulting NuGet Package"
+        DisplayName="Package Path" />
+
+    <StringProperty
+        Name="Generator"
+        Category="Advanced"
+        DisplayName="Custom Tool" />
+    <StringProperty
+        Name="CustomToolNamespace"
+        Category="Advanced"
+        DisplayName="Custom Tool Namespace" />
+    <StringProperty
+        Name="LastGenOutput"
+        Description="The filename of the last file generated as a result of the SFG."
+        Visible="false" />
+    <BoolProperty
+        Name="DesignTime"
+        Description="A value indicating whether this file has a designer."
+        Visible="false" />
+    <BoolProperty
+        Name="AutoGen"
+        Description="A value indicating whether this is a generated file."
+        Visible="false" />
+
+
+    <DynamicEnumProperty
+        Name="{}{ItemType}"
+        Category="Advanced"
+        Description="How the file relates to the build and deployment processes."
+        DisplayName="Build Action"
+        EnumProvider="DynamicItemTypes" />
+
+</Rule>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--  Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.  -->
+<Rule
+    xmlns="http://schemas.microsoft.com/build/2009/properties"
+    Name="Folder"
+    Description="Folder Properties"
+    DisplayName="General"
+    PageTemplate="generic">
+    <Rule.DataSource>
+        <DataSource
+            HasConfigurationCondition="False"
+            ItemType="Folder"
+            Persistence="ProjectFileFolderItems"
+            SourceOfDefaultValue="AfterContext" />
+    </Rule.DataSource>
+
+    <StringProperty
+        Name="Identity"
+        Category="Misc"
+        ReadOnly="true"
+        Visible="false" />
+    <StringProperty
+        Name="FullPath"
+        Category="Misc"
+        Description="Location of the folder"
+        DisplayName="Full Path"
+        ReadOnly="true" />
+    <StringProperty
+        Name="FolderName"
+        Category="Misc"
+        Description="Name of this folder"
+        DisplayName="Folder Name"
+        ReadOnly="true" />
+    <StringProperty
+        Name="DefaultNamespace"
+        DisplayName="Default namespace"
+        ReadOnly="True"
+        Visible="True">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                ItemType="Folder"
+                Persistence="Intrinsic"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+</Rule>

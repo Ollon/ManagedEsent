@@ -1,0 +1,493 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+
+
+  <ItemGroup>
+    <VSCTIncludePath Include="$(VSSDK150Install)\VisualStudioIntegration\Common\Inc" />
+  </ItemGroup>
+
+  <Target Name="AssignEnCultureToNeutralCto" BeforeTargets="MergeCtoResource">
+    <ItemGroup>
+      <_GeneratedCTOFilesWithCulture Include="@(_GeneratedCTOFilesWithNoCulture)">
+        <Culture>en</Culture>
+        <WithCulture>true</WithCulture>
+      </_GeneratedCTOFilesWithCulture>
+
+      <_GeneratedCTOFilesWithNoCulture Remove="@(_GeneratedCTOFilesWithNoCulture)" />
+
+      <_ResourcesToMergeWithCTOWithCultureMetadata Condition="'%(WithCulture)' != 'true'">
+        <Culture>en</Culture>
+        <WithCulture>true</WithCulture>
+      </_ResourcesToMergeWithCTOWithCultureMetadata>
+    </ItemGroup>
+  </Target>
+
+
+  <!-- Update common properties -->
+  <PropertyGroup>
+    <OutputPath>$(OutDir)</OutputPath>
+    <DocumentationFile Condition="'$(DocumentationFile)' == '' AND '$(NoDocumentationFile)' != 'true' AND '$(Nonshipping)' != 'true' AND '$(ProjectLanguage)' == 'VB' AND '$(AssemblyName)' != ''">$(AssemblyName).xml</DocumentationFile>
+    <DocumentationFile Condition="'$(DocumentationFile)' == '' AND '$(NoDocumentationFile)' != 'true' AND '$(Nonshipping)' != 'true' AND '$(ProjectLanguage)' == 'CSharp' AND '$(AssemblyName)' != ''">$(OutputPath)$(AssemblyName).xml</DocumentationFile>
+
+    <CodeAnalysisRuleSet Condition="'$(CodeAnalysisRuleSet)' == '' AND '$(NonShipping)' == 'true'">$(MSBuildThisFileDirectory)analysis\NonShippingProjectRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(CodeAnalysisRuleSet)' == ''">$(MSBuildThisFileDirectory)analysis\Solution.ruleset</CodeAnalysisRuleSet>
+
+  </PropertyGroup>
+
+  <PropertyGroup>
+
+    <!--While UseCommonOutputDirectory will prevent NuGet implementations from being copied, 
+         we still need to turn off CopyNuGetImplementations to prevent the build task from complaining about a 
+         lack of a runtime section in our project.json.-->
+
+
+    <CopyNuGetImplementations>true</CopyNuGetImplementations>
+  </PropertyGroup>
+
+
+  <Choose>
+    <When Condition="'$(SignAssembly)' == 'true'">
+      <PropertyGroup>
+        <AssemblyOriginatorKeyFile Condition="'$(AssemblyOriginatorKeyFile)' == ''">$(MSBuildThisFileDirectory)keys\SolutionFactorySharedKey.snk</AssemblyOriginatorKeyFile>
+        <PublicKey Condition="'$(PublicKey)' == ''">002400000480000094000000060200000024000052534131000400000100010001017544b4a48604d8d48f714df36b5dd445a976ca0f6b93f3b486ae747ed3ccf0fde95cf514c1533b7e909c8019834bda93c659b8b7f20f772f67a1869780a24d4ff120e192823d26a7d34e9edeee9f61b9467258ce8227cb4199266671a47bdf31bf8c7e98742cf84c1e441cb8c5ec25f1a63bb42f23edd4805ca8f75c13b8</PublicKey>
+        <PublicKeyToken Condition="'$(PublicKeyToken)' == ''">19e2606c9b75c0d5</PublicKeyToken>
+      </PropertyGroup>
+    </When>
+  </Choose>
+
+  <!-- Enable IOperation feature for IOperation based analyzers. -->
+  <Choose>
+    <When Condition="$(Features) == ''">
+      <PropertyGroup>
+        <Features>IOperation</Features>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <Features>IOperation,$(Features)</Features>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+
+  <!-- Project language. This is needed to get xaml files to compile correctly. For some reason the ProjectLanguage is not
+       set and some of the tasks will fail
+  -->
+  <PropertyGroup Condition="'$(ProjectLanguage)' == ''">
+    <ProjectLanguage Condition="'$(MSBuildProjectExtension)' == '.csproj' OR '$(Language)' == 'C#'">CSharp</ProjectLanguage>
+  </PropertyGroup>
+
+  <!-- VSIX projects generate a temp project file which doesnt have any extension and needs to be built as C# projects. The .NET SDK
+       just imporrts Microsoft.Common.CurrentVersion.targets. So set LanguageTargets to import CSharp.targets if the 
+       extension is unknown -->
+  <PropertyGroup Condition="'$(LanguageTargets)' == ''">
+    <LanguageTargets Condition="'$(MSBuildProjectExtension)' == '.csproj' OR '$(Language)' == 'C#'">$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
+    <LanguageTargets Condition="'$(MSBuildProjectExtension)' == '.vbproj' OR '$(Language)' == 'VB'">$(MSBuildToolsPath)\Microsoft.VisualBasic.targets</LanguageTargets>
+    <LanguageTargets Condition="'$(LanguageTargets)' == ''">$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(ProjectDir)build\repos\</PackageOutputPath>
+    <PrivateAssemblies>$(DevEnvDir)PrivateAssemblies\</PrivateAssemblies>
+    <PublicAssemblies>$(DevEnvDir)PublicAssemblies\</PublicAssemblies>
+    <AssemblySearchPaths>
+      $(ReferencePath);
+      {CandidateAssemblyFiles};
+      {HintPathFromItem};
+      {TargetFrameworkDirectory};
+      {RawFileName};
+      {GAC};
+      $(MSBuildExtensionsPath)\$(VisualStudioVersion)\Bin;
+      $(MSBuildExtensionsPath)\$(VisualStudioVersion)\Bin\Roslyn;
+      {Registry:$(FrameworkRegistryBase),$(TargetFrameworkVersion),$(AssemblyFoldersSuffix)$(AssemblyFoldersExConditions)};
+      $(DevEnvDir);
+      $(PrivateAssemblies);
+      $(PublicAssemblies)
+    </AssemblySearchPaths>
+    <DesignTimeAssemblySearchPaths>$(AssemblySearchPaths)</DesignTimeAssemblySearchPaths>
+  </PropertyGroup>
+
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+
+  <Import Project="ProjectSystem.targets"/>
+
+  <Choose>
+    <When Condition="'$(TargetFrameworkIdentifier)' == '.NETPortable' AND
+                     '$(TargetFrameworkVersion)' == 'v5.0'">
+      <!-- Treat portable exes as CoreClr-targeting-exes -->
+      <PropertyGroup Condition="'$(OutputType)' == 'Exe'">
+        <NuGetTargetMoniker>DNXCore,Version=v5.0</NuGetTargetMoniker>
+        <BaseNuGetRuntimeIdentifier Condition="'$(OS)' == 'Windows_NT'">win7</BaseNuGetRuntimeIdentifier>
+      </PropertyGroup>
+
+      <!-- Upgrade portable projects to .NETStandard 1.6 -->
+      <PropertyGroup Condition="'$(OutputType)' == 'Library'">
+        <NuGetTargetMoniker>.NETStandard,Version=v1.6</NuGetTargetMoniker>
+      </PropertyGroup>
+    </When>
+  </Choose>
+
+  <!-- It looks like MSBuild has a bug on *nix where they aggressively
+       directory separators from '\' to '/', even when the '\'
+       is being used as an escape character in a define constant in VB.
+       This change works around the bug by removing all quotes from
+       define constants after Microsoft.VisualBasic.CurrentVersion adds
+       them in our build. This should be OK since none of our constants
+       should require quoting. See https://github.com/Microsoft/msbuild/issues/137 -->
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+    <FinalDefineConstants>$(FinalDefineConstants.Replace('"', ''))</FinalDefineConstants>
+  </PropertyGroup>
+
+  <!-- ====================================================================================
+
+         Support for a IncludeInVSIXLocalOnly Content metadata
+
+       ==================================================================================== -->
+
+  <PropertyGroup>
+    <GetVsixSourceItemsDependsOn>$(GetVsixSourceItemsDependsOn);IncludeVsixLocalOnlyItems</GetVsixSourceItemsDependsOn>
+  </PropertyGroup>
+
+  <Target Name="IncludeVsixLocalOnlyItems">
+    <!-- This is shamelessly ripped from Microsoft.VsSDK.targets -->
+    <ItemGroup>
+      <VSIXSourceItemLocalOnly Include="@(Content)" Condition="'%(Content.IncludeInVSIXLocalOnly)'=='true' AND '%(Content.VSIXSubPath)'==''">
+        <!-- Sets VSIXSubPath for content items that are nonlinked files -->
+        <VSIXSubPath Condition="'%(Content.Link)'==''">%(Content.RelativeDir)</VSIXSubPath>
+        <!-- Sets VSIXSubPath for content items that are linked files -->
+        <VSIXSubPath Condition="'%(Content.Link)'!=''">$([System.IO.Path]::GetDirectoryName(%(Content.Link)))</VSIXSubPath>
+      </VSIXSourceItemLocalOnly>
+
+      <VSIXSourceItemLocalOnly Include="@(Content)" Condition="'%(Content.IncludeInVSIXLocalOnly)'=='true' AND '%(Content.VSIXSubPath)'!=''" />
+    </ItemGroup>
+  </Target>
+
+  <!-- ====================================================================================
+
+         Include some of our NuGet-consumed assets into VSIX projects
+
+         This exists for two reasons:
+
+         1) In some cases, we need to include the contents of a NuGet package that is otherwise
+            contained within the SuppressFromVsix list, because we're actually the component
+            inside Visual Studio that ships that component
+         
+         2) The SDK targets don't currently look at the ReferenceCopyLocalPaths produced
+            by the NuGet build task.
+
+       ==================================================================================== -->
+
+  <PropertyGroup>
+    <GetVsixSourceItemsDependsOn>IncludeNuGetResolvedAssets;$(GetVsixSourceItemsDependsOn)</GetVsixSourceItemsDependsOn>
+  </PropertyGroup>
+
+  <Target Name="IncludeNuGetResolvedAssets" AfterTargets="ResolveReferences" DependsOnTargets="ResolveReferences" Condition="'$(CreateVsixContainer)' == 'true'">
+    <ItemGroup>
+      <_ReferenceCopyLocalPathsWithPotentialInclusions Include="@(ReferenceCopyLocalPaths)" />
+
+      <VSIXCopyLocalReferenceSourceItem Include="@(_ReferenceCopyLocalPathsWithPotentialInclusions)">
+        <ForceIncludeInVsix>true</ForceIncludeInVsix>
+        <Private>true</Private>
+      </VSIXCopyLocalReferenceSourceItem>
+    </ItemGroup>
+
+    <Message Importance="high" Text="@(VSIXCopyLocalReferenceSourceItem)" />
+
+  </Target>
+
+
+  <!-- This is a copy of the Microsoft.VisualStudio.SDK.EmbedInteropTypes NuGet package, but only the list of
+       assemblies that we need. The package includes things like EnvDTE which are reasonable for consumers, but
+       strange since we actually _implement_ DTE and use it as an exchange type with generics in a few places. -->
+  <Target Name="LinkVSSDKEmbeddableAssemblies" DependsOnTargets="ResolveReferences" AfterTargets="ResolveReferences">
+    <ItemGroup>
+      <ReferencePath Condition="
+              '%(FileName)' == 'Microsoft.VisualStudio.Setup.Configuration.Interop'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Imaging.Interop.15.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Embeddable'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.10.0'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.11.0'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.12.0'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.15.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.15.3.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Feedback.Interop.12.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.ProjectSystem.Interop'
+           or '%(FileName)' == 'NuGet.VisualStudio'
+           or '%(FileName)' == 'stdole'
+           or '%(FileName)' == 'microsoft.visualstudio.designer.interfaces'
+           or '%(FileName)' == 'EnvDTE80'
+           or '%(FileName)' == 'EnvDTE90'
+           or '%(FileName)' == 'EnvDTE100'
+           or '%(FileName)' == 'Microsoft.VisualStudio.CommandBars'
+           or '%(FileName)' == 'Microsoft.Internal.VisualStudio.Shell.Interop.14.1.DesignTime'
+           or '%(FileName)' == 'Microsoft.Internal.VisualStudio.Shell.Interop.14.2.DesignTime'
+           or '%(FileName)' == 'Microsoft.Internal.VisualStudio.Shell.Embeddable'
+              ">
+        <EmbedInteropTypes>true</EmbedInteropTypes>
+      </ReferencePath>
+    </ItemGroup>
+  </Target>
+
+  <!-- ====================================================================================
+
+         Generation of AssemblyVersion attributes from the BuildVersion property
+
+       ==================================================================================== -->
+
+  <!--<Import Project="GenerateAssemblyInfo.targets" Condition="'$(ProjectLanguage)' == 'CSharp' OR '$(ProjectLanguage)' == 'VB'" />-->
+
+
+  <!-- ====================================================================================
+
+         Generation of InternalsVisibleTo attributes from the project
+
+       ==================================================================================== -->
+
+  <PropertyGroup>
+    <GeneratedInternalsVisibleToFile>$(IntermediateOutputPath)GeneratedInternalsVisibleTo$(DefaultLanguageSourceExtension)</GeneratedInternalsVisibleToFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CoreCompileDependsOn>GenerateInternalsVisibleToFile;$(CoreCompileDependsOn)</CoreCompileDependsOn>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <InternalsVisibleTo>
+      <Visible>false</Visible>
+    </InternalsVisibleTo>
+    <InternalsVisibleToTest>
+      <Visible>false</Visible>
+    </InternalsVisibleToTest>
+    <InternalsVisibleToTypeScript>
+      <Visible>false</Visible>
+    </InternalsVisibleToTypeScript>
+    <InternalsVisibleToFSharp>
+      <Visible>false</Visible>
+    </InternalsVisibleToFSharp>
+    <InternalsVisibleToMoq>
+      <Visible>false</Visible>
+    </InternalsVisibleToMoq>
+  </ItemDefinitionGroup>
+
+  <PropertyGroup Condition="'$(PublicKey)' != '' and '$(SignAssembly)' == 'True'">
+    <InternalsVisibleToSuffix>, PublicKey=$(PublicKey)</InternalsVisibleToSuffix>
+    <InternalsVisibleToTestSuffix>, PublicKey=$(RoslynInternalKey)</InternalsVisibleToTestSuffix>
+    <InternalsVisibleToMoqSuffix>, PublicKey=0024000004800000940000000602000000240000525341310004000001000100c547cac37abd99c8db225ef2f6c8a3602f3b3606cc9891605d02baa56104f4cfc0734aa39b93bf7852f7d9266654753cc297e7d2edfe0bac1cdcf9f717241550e0a7b191195b7667bb4f64bcb8e2121380fd1d9d46ad2d92d2d15605093924cceaf74c4861eff62abf69b9291ed0a340e113be11e6a7d3113e92484cf7045cc7</InternalsVisibleToMoqSuffix>
+  </PropertyGroup>
+
+  <!-- Dependency on PrepareForBuild is necessary so that we don't accidentally get ordered before it.
+  We rely on PrepareForBuild to create the IntermediateOutputDirectory if it doesn't exist. -->
+  <Target Name="GenerateInternalsVisibleToFile"
+          Inputs="$(MSBuildThisFileFullPath);$(MSBuildProjectFile)"
+          Outputs="$(GeneratedInternalsVisibleToFile)"
+          DependsOnTargets="PrepareForBuild"
+          Condition="'@(InternalsVisibleTo)' != '' OR '@(InternalsVisibleToTest)' != '' OR '@(InternalsVisibleToTypeScript)' != '' OR '@(InternalsVisibleToFSharp)' != '' OR '@(InternalsVisibleToMoq)' != ''">
+
+    <!--
+         This is a slightly evil trick. What we have is a group of InternalsVisibleTo items which
+         we need to convert to the items that the WriteCodeFragment expects. They look like this:
+         
+         <InternalsVisibleTo Include="Foo" />
+         
+         And need to convert it to:
+         
+         <InternalsVisibleToAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+           <_Parameter1>Foo</Parameter1>
+         </InternalsVisibleToAttribute>
+         
+         One way (although a bit evil) is to use the old CreateItem task. Since we use the well-defined
+         "Identity" metadata on each of our itemgroups, MSBuild batching will take effect and this task
+         will be invoked once for each InternalsVisibleTo item.
+    -->
+    <CreateItem Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute"
+                AdditionalMetadata="_Parameter1=%(InternalsVisibleTo.Identity)$(InternalsVisibleToSuffix)"
+                Condition="'@(InternalsVisibleTo)' != ''">
+      <Output TaskParameter="Include" ItemName="InternalsVisibleToAttribute" />
+    </CreateItem>
+    <CreateItem Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute"
+                AdditionalMetadata="_Parameter1=%(InternalsVisibleToTest.Identity)$(InternalsVisibleToTestSuffix)"
+                Condition="'@(InternalsVisibleToTest)' != ''">
+      <Output TaskParameter="Include" ItemName="InternalsVisibleToAttribute" />
+    </CreateItem>
+    <CreateItem Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute"
+                AdditionalMetadata="_Parameter1=%(InternalsVisibleToTypeScript.Identity), PublicKey=002400000480000094000000060200000024000052534131000400000100010007d1fa57c4aed9f0a32e84aa0faefd0de9e8fd6aec8f87fb03766c834c99921eb23be79ad9d5dcc1dd9ad236132102900b723cf980957fc4e177108fc607774f29e8320e92ea05ece4e821c0a5efe8f1645c4c0c93c1ab99285d622caa652c1dfad63d745d6f2de5f17e5eaf0fc4963d261c8a12436518206dc093344d5ad293"
+                Condition="'@(InternalsVisibleToTypeScript)' != ''">
+      <Output TaskParameter="Include" ItemName="InternalsVisibleToAttribute" />
+    </CreateItem>
+    <CreateItem Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute"
+                AdditionalMetadata="_Parameter1=%(InternalsVisibleToFSharp.Identity), PublicKey=002400000480000094000000060200000024000052534131000400000100010007D1FA57C4AED9F0A32E84AA0FAEFD0DE9E8FD6AEC8F87FB03766C834C99921EB23BE79AD9D5DCC1DD9AD236132102900B723CF980957FC4E177108FC607774F29E8320E92EA05ECE4E821C0A5EFE8F1645C4C0C93C1AB99285D622CAA652C1DFAD63D745D6F2DE5F17E5EAF0FC4963D261C8A12436518206DC093344D5AD293"
+                Condition="'@(InternalsVisibleToFSharp)' != ''">
+      <Output TaskParameter="Include" ItemName="InternalsVisibleToAttribute" />
+    </CreateItem>
+    <CreateItem Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute"
+                AdditionalMetadata="_Parameter1=%(InternalsVisibleToMoq.Identity)$(InternalsVisibleToMoqSuffix)"
+                Condition="'@(InternalsVisibleToMoq)' != ''">
+      <Output TaskParameter="Include" ItemName="InternalsVisibleToAttribute" />
+    </CreateItem>
+
+    <WriteCodeFragment
+        AssemblyAttributes="@(InternalsVisibleToAttribute)"
+        Language="$(Language)"
+        OutputFile="$(GeneratedInternalsVisibleToFile)">
+      <Output TaskParameter="OutputFile" ItemName="Compile" />
+      <Output TaskParameter="OutputFile" ItemName="FileWrites" />
+    </WriteCodeFragment>
+
+  </Target>
+
+  <!-- ====================================================================================
+
+         VSSDK
+
+       ==================================================================================== -->
+
+  <Import Project="$(MSBuildThisFileDirectory)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(ImportVSSDKTargets)' == 'true' And Exists('$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets')" />
+
+  <!-- The VSSDK immplements some targets which are run during design time builds per convention. 
+       If the Project is not a VSIX project and sets $CreateVSIXContainer=false these targets should be 
+       a no-op. However they dont check for that and that's a bug. To workaround, we override them
+       with empty targets and conditionally import these if CreateVSIXContainer is false.
+       Tracked by https://devdiv.visualstudio.com/DevDiv/_workitems?id=365685&fullScreen=false&_a=edit   -->
+  <Import Project="$(MSBuildThisFileDirectory)\VSSDK\VSSDKDesignTimeBuildWorkaround.targets" Condition="'$(CreateVsixContainer)'=='false'" />
+
+
+  <!-- ====================================================================================
+
+         Support for signing
+
+       ==================================================================================== -->
+  <ItemGroup>
+    <FilesToSign Condition="'$(ShouldSignBuild)' == 'true' AND '$(NonShipping)' != 'true' AND '$(ProjectSystemLayer)' != 'Dependency'" Include="$(OutDir)\$(AssemblyName).dll">
+      <Authenticode>Microsoft</Authenticode>
+      <StrongName>$(StrongNameCertificateFriendlyId)</StrongName>
+    </FilesToSign>
+  </ItemGroup>
+
+  <ItemGroup>
+    <FilesToSign Condition="'$(ShouldSignBuild)' == 'true' AND '$(ProducingSignedVsix)' == 'true'" Include="$(TargetVsixContainer)">
+      <Authenticode>VsixSHA2</Authenticode>
+    </FilesToSign>
+  </ItemGroup>
+
+  <Target Name="IncludeResourcesDllForSigning" AfterTargets="CopyFilesToOutputDirectory">
+    <ItemGroup>
+      <!-- Handle the resources dll if there are any -->
+      <FilesToSign Condition="'$(ShouldSignBuild)' == 'true' AND '$(NonShipping)' != 'true' AND '$(ProjectSystemLayer)' != 'Dependency'" Include="$(OutDir)\**\$(AssemblyName).resources.dll">
+        <Authenticode>Microsoft</Authenticode>
+        <StrongName>$(StrongNameCertificateFriendlyId)</StrongName>
+      </FilesToSign>
+    </ItemGroup>
+  </Target>
+
+  <!-- This target is similar to SatelliteDllsProjectOutputGroup except it includes path from the final output path rather than intermediate output path -->
+  <Target Name="SatelliteDllsProjectOutputGroupWithFinalOutputPath"
+        Returns="@(SatelliteDllsProjectOutputGroupWithFinalOutputPathOutput)"
+        DependsOnTargets="$(SatelliteDllsProjectOutputGroupDependsOn)">
+
+    <ItemGroup>
+      <SatelliteDllsProjectOutputGroupWithFinalOutputPathItem Include="$(OutputPath)%(EmbeddedResource.Culture)\$(TargetName).resources.dll"
+                                                         Condition="'%(WithCulture)' == 'true'">
+        <TargetPath>%(EmbeddedResource.Culture)\$(TargetName).resources.dll</TargetPath>
+      </SatelliteDllsProjectOutputGroupWithFinalOutputPathItem>
+    </ItemGroup>
+
+    <!-- Convert intermediate items into final items; this way we can get the full path for each item. -->
+    <ItemGroup>
+      <SatelliteDllsProjectOutputGroupWithFinalOutputPathOutput Include="@(SatelliteDllsProjectOutputGroupWithFinalOutputPathItem->'%(FullPath)')">
+        <OriginalItemSpec>%(SatelliteDllsProjectOutputGroupWithFinalOutputPathItem.Identity)</OriginalItemSpec>
+      </SatelliteDllsProjectOutputGroupWithFinalOutputPathOutput>
+    </ItemGroup>
+  </Target>
+
+  <!-- ====================================================================================
+
+  Copying vsixmanifest to a separate folder
+
+  ==================================================================================== -->
+
+  <Target Name="CopyAdditionalFilesToOutputDirectory" AfterTargets="CopyFilesToOutputDirectory">
+
+    <!-- Copy manifests to be picked up by NuGet insertion packages -->
+    <Copy SourceFiles="source.extension.vsixmanifest"
+          DestinationFolder="$(OutDir)\Manifests\$(MSBuildProjectName)"
+          SkipUnchangedFiles="$(SkipCopyUnchangedFiles)"
+          OverwriteReadOnlyFiles="$(OverwriteReadOnlyFiles)"
+          Retries="$(CopyRetryCount)"
+          RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)"
+          UseHardlinksIfPossible="$(CreateHardLinksForCopyFilesToOutputDirectoryIfPossible)"
+          Condition="'$(CreateVsixContainer)' == 'true'"
+          >
+
+      <Output TaskParameter="DestinationFiles" ItemName="FileWrites"/>
+    </Copy>
+
+    <ItemGroup>
+      <_XamlPropertyRuleToCopy Include="@(XamlPropertyRule);@(XamlPropertyRuleNoCodeBehind);@(XamlPropertyRuleProjectItemsSchema)" />
+
+      <!-- Pick up localized copies as well -->
+      <_XamlPropertyRuleToCopy Include="%(RootDir)%(Directory)**\%(Filename)%(Extension)" />
+    </ItemGroup>
+
+    <!-- Copy rule files for testing and setup authoring purposes -->
+    <Copy SourceFiles="@(_XamlPropertyRuleToCopy)"
+          DestinationFiles="@(_XamlPropertyRuleToCopy->'$(OutDir)\Rules\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="$(SkipCopyUnchangedFiles)"
+          OverwriteReadOnlyFiles="$(OverwriteReadOnlyFiles)"
+          Retries="$(CopyRetryCount)"
+          RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)"
+          UseHardlinksIfPossible="$(CreateHardLinksForCopyFilesToOutputDirectoryIfPossible)"
+          >
+
+      <Output TaskParameter="DestinationFiles" ItemName="FileWrites"/>
+    </Copy>
+
+  </Target>
+
+  <Choose>
+    <When Condition="'$(IncludeWpfReferences)' == 'true'">
+      <ItemGroup>
+        <Reference Include="PresentationCore" Private="False" />
+        <Reference Include="PresentationFramework" Private="False"  />
+        <Reference Include="System.Design" Private="False"  />
+        <Reference Include="System.Xaml" Private="False"  />
+        <Reference Include="UIAutomationProvider" Private="False"  />
+        <Reference Include="WindowsBase" Private="False"  />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(IncludeMSBuildReferences)' == 'true'">
+      <ItemGroup>
+        <Reference Include="Microsoft.Build" Private="False" HintPath="$([MSBuild]::GetToolsDirectory32())\Microsoft.Build.dll" />
+        <Reference Include="Microsoft.Build.Tasks.Core" Private="False" HintPath="$([MSBuild]::GetToolsDirectory32())\Microsoft.Build.Framework.dll" />
+        <Reference Include="Microsoft.Build.Utilities.Core" Private="False" HintPath="$([MSBuild]::GetToolsDirectory32())\Microsoft.Build.Utilities.Core.dll" />
+        <Reference Include="Microsoft.Build.Tasks.Core" Private="False" HintPath="$([MSBuild]::GetToolsDirectory32())\Microsoft.Build.Tasks.Core.dll" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(IncludePowerShellReferences)' == 'true'">
+      <ItemGroup>
+        <Reference Include="System.Management" Private="False" />
+        <Reference Include="System.Management.Automation" Private="False"  />
+        <Reference Include="Microsoft.Management.Infrastructure" Private="False"  />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(IncludeMEFV1References)' == 'true'">
+      <ItemGroup>
+        <Reference Include="System.ComponentModel.Composition" Private="False" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+
+
+
+</Project>

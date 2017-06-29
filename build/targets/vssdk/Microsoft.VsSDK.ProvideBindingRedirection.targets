@@ -1,0 +1,18 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GeneratedProvideBindingRedirectionFile>$(IntermediateOutputPath)GeneratedProvideBindingRedirection.cs</GeneratedProvideBindingRedirectionFile>
+    <CoreCompileDependsOn>GenerateProvideBindingRedirectionFile;$(CoreCompileDependsOn)</CoreCompileDependsOn>
+  </PropertyGroup>
+  <Target Name="GenerateProvideBindingRedirectionFile" Inputs="$(MSBuildThisFileFullPath);$(MSBuildProjectFile)" Outputs="$(GeneratedProvideBindingRedirectionFile)" DependsOnTargets="PrepareForBuild">
+    <CreateItem Include="Microsoft.VisualStudio.Shell.ProvideBindingRedirectionAttribute" >
+      <Output TaskParameter="Include" ItemName="ProvideBindingRedirectionAttribute" />
+    </CreateItem>
+    <WriteCodeFragment AssemblyAttributes="@(ProvideBindingRedirectionAttribute)" Language="$(Language)" OutputFile="$(GeneratedProvideBindingRedirectionFile)">
+      <Output TaskParameter="OutputFile" ItemName="Compile" />
+      <Output TaskParameter="OutputFile" ItemName="FileWrites" />
+    </WriteCodeFragment>
+  </Target>
+</Project>

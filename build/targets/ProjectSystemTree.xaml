@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--  Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.  -->
+<Rule
+    xmlns="http://schemas.microsoft.com/build/2009/properties"
+    Name="ProjectSystemTree"
+    Description="General"
+    DisplayName="General"
+    OverrideMode="Replace"
+    PageTemplate="generic">
+    <Rule.Categories>
+        <Category
+            Name="General"
+            Description="General"
+            DisplayName="General" />
+    </Rule.Categories>
+    <Rule.DataSource>
+        <DataSource
+            HasConfigurationCondition="False"
+            Persistence="ProjectFile"
+            SourceOfDefaultValue="AfterContext" />
+    </Rule.DataSource>
+
+    <StringProperty
+        Name="Name"
+        Category="General"
+        Description="The name of the item"
+        DisplayName="Name" />
+
+</Rule>

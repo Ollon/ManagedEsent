@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+***********************************************************************************************
+Settings.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) Ollon, LLC. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <VisualStudioVersionMajor Condition="'$(VisualStudioVersionMajor)' == ''">15</VisualStudioVersionMajor>
+    <VisualStudioVersionMinor Condition="'$(VisualStudioVersionMinor)' == ''">3</VisualStudioVersionMinor>
+    <SecondsFromMidnight>$([System.Decimal]::Divide($([System.DateTime]::Now.TimeOfDay.TotalSeconds), 2))</SecondsFromMidnight>
+    <BuildNumber>$([System.DateTime]::Now.Day)</BuildNumber>
+    <BuildRevision>$([System.Decimal]::Parse(`$(SecondsFromMidnight)`))</BuildRevision>
+    <BuildVersion>$(VisualStudioVersionMajor).$(VisualStudioVersionMinor).$(BuildNumber).$(BuildRevision.Split(`.`)[0])</BuildVersion>
+    <AssemblyBuildVersion>$(VisualStudioVersionMajor).$(VisualStudioVersionMinor).$(BuildNumber).0</AssemblyBuildVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NoPackageAnalysis Condition="'$(NoPackageAnalysis)' == ''">true</NoPackageAnalysis>
+    <GeneratePackageOnBuild Condition="'$(GeneratePackageOnBuild)' == ''">false</GeneratePackageOnBuild>
+    <CopyLocalLockFileAssemblies Condition="'$(CopyLocalLockFileAssemblies)' == ''">true</CopyLocalLockFileAssemblies>
+    <ImportVSSDKTargets Condition="'$(ImportVSSDKTargets)' == ''">false</ImportVSSDKTargets>
+    <GeneratePkgDefFile Condition="'$(GeneratePkgDefFile)' == ''">false</GeneratePkgDefFile>
+    <DeployExtension Condition="'$(DeployExtension)' == ''">false</DeployExtension>
+    <DeployVSTemplates Condition="'$(DeployVSTemplates)' == ''">false</DeployVSTemplates>
+    <CreateVsixContainer Condition="'$(CreateVsixContainer)' == ''">false</CreateVsixContainer>
+    <ProvideCodeBase Condition="'$(ProvideCodeBase)' == ''">false</ProvideCodeBase>
+    <ProvideBindingRedirection Condition="'$(ProvideBindingRedirection)' == ''">false</ProvideBindingRedirection>
+    <IncludeBuildOutput Condition="'$(IncludeBuildOutput)' == ''">true</IncludeBuildOutput>
+    <DisableImplicitFrameworkReferences Condition="'$(DisableImplicitFrameworkReferences)' == ''">false</DisableImplicitFrameworkReferences>
+    <AppendTargetFrameworkToOutputPath Condition="'$(AppendTargetFrameworkToOutputPath)' == ''">true</AppendTargetFrameworkToOutputPath>
+    <IncludePowerShellReferences Condition="'$(IncludePowerShellReferences)' == ''">false</IncludePowerShellReferences>
+    <IncludeWpfReferences Condition="'$(IncludeWpfReferences)' == ''">false</IncludeWpfReferences>
+    <IncludeMSBuildReferences Condition="'$(IncludeMSBuildReferences)' == ''">false</IncludeMSBuildReferences>
+    <IncludeMEFV1References Condition="'$(IncludeMEFV1References)' == ''">false</IncludeMEFV1References>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <Company Condition="'$(Company)'==''">Ollon, LLC</Company>
+    <Copyright Condition="'$(Copyright)'==''">© 2017 Ollon, LLC. All Rights Reserved.</Copyright>
+    <Description Condition="'$(Description)'==''">$(AssemblyName)</Description>
+    <Product Condition="'$(Product)'==''">$(AssemblyName)</Product>
+    <AssemblyTitle Condition="'$(AssemblyTitle)'==''">$(AssemblyName)</AssemblyTitle>
+    <NetralLanguage Condition="'$(NetralLanguage)'==''">en-US</NetralLanguage>
+    <AssemblyVersion Condition="'$(AssemblyVersion)' == ''">$(AssemblyBuildVersion)</AssemblyVersion>
+    <PackageVersion Condition="'$(PackageVersion)' == ''">$(BuildVersion)</PackageVersion>
+    <InformationalVersion Condition="'$(InformationalVersion)' == ''">$(AssemblyBuildVersion)</InformationalVersion>
+    <AssemblyFileVersion Condition="'$(AssemblyFileVersion)' == ''">$(AssemblyBuildVersion)</AssemblyFileVersion>
+    <PackageReleaseNotes Condition="'$(PackageReleaseNotes)' == ''">$(MSBuildProjectName)</PackageReleaseNotes>
+    <PackageProjectUrl Condition="'$(PackageProjectUrl)' == ''">https://aka.ms/vsextensibility</PackageProjectUrl>
+    <PackageLicenseUrl Condition="'$(PackageLicenseUrl)' == ''">https://aka.ms/pexunj</PackageLicenseUrl>
+    <PackageIconUrl Condition="'$(PackageIconUrl)' == ''">https://aka.ms/vsextensibilityicon</PackageIconUrl>
+    <PackageRequireLicenseAcceptance Condition="'$(PackageRequireLicenseAcceptance)' == ''">true</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+
+  <PropertyGroup>
+    <VSToolsPath>$(MSBuildThisFileDirectory)..\tools\</VSToolsPath>
+    <VsToolsPath>$(VSToolsPath)</VsToolsPath>
+    <VsSDKInstall>$(VSToolsPath)\VSSDK</VsSDKInstall>
+    <VsSDKIncludes>$(VsSDKInstall)\inc</VsSDKIncludes>
+    <VsSDKToolsPath>$(VsSDKInstall)\refs</VsSDKToolsPath>
+    <VsixSchemaPath>$(VsSDKInstall)\schemas\VSIXManifestSchema.xsd</VsixSchemaPath>
+    <ProjectSystemRulesDirectory Condition="'$(ProjectSystemRulesDirectory)' == ''">$(MSBuildThisFileDirectory)rules\</ProjectSystemRulesDirectory>
+    <ProjectSystemSchemasDirectory Condition="'$(ProjectSystemSchemasDirectory)' == ''">$(MSBuildThisFileDirectory)schemas\</ProjectSystemSchemasDirectory>
+  </PropertyGroup>
+
+
+  <PropertyGroup>
+    <WindowsAppContainer Condition="'$(WindowsAppContainer)' == ''">false</WindowsAppContainer>
+    <TreadWarningsAsErrors Condition="'$(TreadWarningsAsErrors)' == ''">true</TreadWarningsAsErrors>
+    <UseSharedCompilation Condition="'$(UseSharedCompilation)' == ''">true</UseSharedCompilation>
+  </PropertyGroup>  
+
+
+  <PropertyGroup>
+    <OverwriteReadOnlyFiles Condition="'$(OverwriteReadOnlyFiles)' == ''">true</OverwriteReadOnlyFiles>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
+    <VisualStudioReferenceMajorVersion Condition="'$(VisualStudioReferenceMajorVersion)' == ''">$(VisualStudioVersion.Substring(0, $(VisualStudioVersion.IndexOf('.'))))</VisualStudioReferenceMajorVersion>
+    <VisualStudioReferenceAssemblyVersion Condition="'$(VisualStudioReferenceAssemblyVersion)' == ''">$(VisualStudioReferenceMajorVersion).0.0.0</VisualStudioReferenceAssemblyVersion>
+    <VisualStudioCodename>Dev$(VisualStudioReferenceMajorVersion)</VisualStudioCodename>
+    <MinimumVisualStudioVersion>$(VisualStudioVersion)</MinimumVisualStudioVersion>
+    <VSLToolsPath Condition="'$(VSLToolsPath)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)\..'))</VSLToolsPath>
+    <VSLTargetsPath Condition="'$(VSLTargetsPath)' == ''">$(MSBuildThisFileDirectory)</VSLTargetsPath>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <SignAssembly Condition="'$(SignAssembly)' == ''">true</SignAssembly>
+    <UseRoslynAnalyzers Condition="'$(UseRoslynAnalyzers)' == ''">false</UseRoslynAnalyzers>
+    
+    <DisableImplicitFrameworkReferences Condition="'$(DisableImplicitFrameworkReferences)' == ''">false</DisableImplicitFrameworkReferences>
+    <BaseNuGetRuntimeIdentifier Condition="'$(OS)' == 'Windows_NT'">win7</BaseNuGetRuntimeIdentifier>
+    <EnableDefaultItems Condition="'$(EnableDefaultItems)' == ''">true</EnableDefaultItems>
+    <EnableDefaultCompileItems Condition="'$(EnableDefaultCompileItems)' == ''">true</EnableDefaultCompileItems>
+    <EnableDefaultNoneItems Condition="'$(EnableDefaultNoneItems)' == ''">true</EnableDefaultNoneItems>
+    <EnableDefaultEmbeddedResourceItems Condition="'$(EnableDefaultEmbeddedResourceItems)' == ''">true</EnableDefaultEmbeddedResourceItems>
+  </PropertyGroup>
+
+  <!-- Set the BaseIntermediateOutputPath before importing the common.props because that's
+       where msbuild looks for generated nuget targets.-->
+  <PropertyGroup>
+    <ProjectDir>$(MSBuildThisFileDirectory)..\..\</ProjectDir>
+    
+    <OutDir Condition="'$(OutDir)' == ''">$([System.IO.Path]::GetFullPath('$(ProjectDir)bin\$(Configuration)\$(MSBuildProjectName)'))\</OutDir>
+    <VSLOutDir>$(OutDir)</VSLOutDir>
+    <OutputPath Condition="'$(OutputPath)' == ''">$(OutDir)</OutputPath>
+    <BaseIntermediateOutputPath>$([System.IO.Path]::GetFullPath('$(ProjectDir)bin\obj\$(MSBuildProjectName)'))\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+
+
+  <PropertyGroup>
+    <DefineCommonItemSchemas Condition="'$(DefineCommonItemSchemas)' == ''">false</DefineCommonItemSchemas>
+    <DefineCommonCapabilities Condition="'$(DefineCommonCapabilities)' == ''">false</DefineCommonCapabilities>
+    <DefineCommonReferenceSchemas Condition="'$(DefineCommonReferenceSchemas)' == ''">false</DefineCommonReferenceSchemas>
+    
+    <DefineCommonManagedCapabilities>false</DefineCommonManagedCapabilities>
+    <DefineCommonManagedItemSchemas>false</DefineCommonManagedItemSchemas>
+    <DefineCommonManagedReferenceSchemas>false</DefineCommonManagedReferenceSchemas>
+    
+    <DefineCommonCSharpExtendedCapabilities>true</DefineCommonCSharpExtendedCapabilities>
+    <DefineCommonCSharpExtendedItemSchemas>true</DefineCommonCSharpExtendedItemSchemas>
+    <DefineCommonCSharpExtendedReferenceSchemas>true</DefineCommonCSharpExtendedReferenceSchemas>
+  </PropertyGroup>
+
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+
+  <PropertyGroup Condition="'$(VSCOMNTOOLS)' == ''">
+    <VSCOMNTOOLS>$([System.Environment]::ExpandEnvironmentVariables("%VS$(VisualStudioReferenceMajorVersion)0COMNTOOLS%"))</VSCOMNTOOLS>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(DevEnvDir)' == ''">
+    <DevEnvDir>$(VSCOMNTOOLS)\..\IDE</DevEnvDir>
+    <DevEnvDir>$([System.IO.Path]::GetFullPath('$(DevEnvDir)'))</DevEnvDir>
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '12.0'">
+      <PropertyGroup>
+        <MSBuildAssemblyNameFragment>v12.0</MSBuildAssemblyNameFragment>
+      </PropertyGroup>
+    </When>
+
+    <Otherwise>
+      <PropertyGroup>
+        <MSBuildAssemblyNameFragment>Core</MSBuildAssemblyNameFragment>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+
+  
+  
+</Project>

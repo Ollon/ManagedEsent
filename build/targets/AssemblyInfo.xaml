@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    TODO: Reference the rule from the targets file using the PropertyPageSchema tag
+
+    Example: Including the following in the targets file will add a new property page in the project properties dialog.
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\assemblyinfo.xaml;">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+
+    For more information, please refer to the following blog post:
+    http://blogs.msdn.com/b/vsproject/archive/2009/06/18/platform-extensibility-part-2.aspx-->
+<Rule
+    xmlns="http://schemas.microsoft.com/build/2009/properties"
+    Name="AssemblyInfo"
+    Description="Allows editing the assembly information"
+    DisplayName="Assembly Info"
+    PageTemplate="tool">
+    <Rule.DataSource>
+        <DataSource HasConfigurationCondition="True" Persistence="ProjectFile" />
+    </Rule.DataSource>
+
+    <Rule.Categories>
+        <Category
+            Name="AssemblyInfo"
+            Description="Properties that provide metada related to the assembly"
+            DisplayName="Assembly Information" />
+    </Rule.Categories>
+
+    <StringProperty
+        Name="AssemblyTitle"
+        Category="AssemblyInfo"
+        Description="The output name for the assembly"
+        DisplayName="Assembly Title">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="false"
+                Label="AssemblyInfo"
+                PersistedName="AssemblyTitle"
+                Persistence="ProjectFile" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="AssemblyDescription"
+        Category="AssemblyInfo"
+        Description="A short description of the assembly"
+        DisplayName="Assembly Description">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="false"
+                Label="AssemblyInfo"
+                PersistedName="AssemblyDescription"
+                Persistence="ProjectFile" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="AssemblyConfiguration"
+        Category="AssemblyInfo"
+        Description="The configuration (i.e., Debug, Release, etc.) of the assembly"
+        DisplayName="Assembly Configuration">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="false"
+                Label="AssemblyInfo"
+                PersistedName="AssemblyConfiguration"
+                Persistence="ProjectFile" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="AssemblyCompany"
+        Category="AssemblyInfo"
+        Description="Represents the owning company/individual of this assembly"
+        DisplayName="Assembly Company">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="false"
+                Label="AssemblyInfo"
+                PersistedName="AssemblyCompany"
+                Persistence="ProjectFile" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="AssemblyProduct"
+        Category="AssemblyInfo"
+        Description="The parent product of this assembly"
+        DisplayName="Assembly Product">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="false"
+                Label="AssemblyInfo"
+                PersistedName="AssemblyProduct"
+                Persistence="ProjectFile" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="AssemblyCopyright"
+        Category="AssemblyInfo"
+        Description="The copyright for the assembly."
+        DisplayName="Assembly Copyright">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="false"
+                Label="AssemblyInfo"
+                PersistedName="AssemblyCopyright"
+                Persistence="ProjectFile" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="AssemblyTrademark"
+        Category="AssemblyInfo"
+        Description="The trademark for the assembly."
+        DisplayName="Assembly Trademark">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="false"
+                Label="AssemblyInfo"
+                PersistedName="AssemblyTrademark"
+                Persistence="ProjectFile" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="AssemblyCulture"
+        Category="AssemblyInfo"
+        Description="The culture for the assembly."
+        DisplayName="Assembly Culture">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="false"
+                Label="AssemblyInfo"
+                PersistedName="AssemblyCulture"
+                Persistence="ProjectFile" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <EnumProperty
+        Name="CLSCompliant"
+        Category="AssemblyInfo"
+        DisplayName="CLS Compliant">
+        <EnumValue Name="false" DisplayName="False" />
+        <EnumValue Name="true" DisplayName="True" />
+        <EnumProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="false"
+                Label="AssemblyInfo"
+                PersistedName="CLSCompliant"
+                Persistence="ProjectFile" />
+        </EnumProperty.DataSource>
+    </EnumProperty>
+
+    <EnumProperty
+        Name="ComVisible"
+        Category="AssemblyInfo"
+        DisplayName="Com Visible">
+        <EnumValue Name="false" DisplayName="False" />
+        <EnumValue Name="true" DisplayName="True" />
+        <EnumProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="false"
+                Label="AssemblyInfo"
+                PersistedName="ComVisible"
+                Persistence="ProjectFile" />
+        </EnumProperty.DataSource>
+    </EnumProperty>
+
+</Rule>

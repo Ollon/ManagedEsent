@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--  Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.  -->
+<ProjectSchemaDefinitions
+    xmlns="http://schemas.microsoft.com/build/2009/properties"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:msbuild="http://schemas.microsoft.com/developer/msbuild/tasks/2005"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <Rule
+        Name="ManifestToCode"
+        Description="Image Manifest to Code Generator Tool"
+        FileExtension=".imagemanifest"
+        OverrideMode="Replace"
+        PageTemplate="tool"
+        SwitchPrefix="/"
+        ToolName="ManifestToCode">
+        <Rule.DisplayName>
+            <sys:String>Manifest to Code Generator</sys:String>
+        </Rule.DisplayName>
+        <Rule.Properties>
+            <StringProperty
+                IncludeInCommandLine="True"
+                IsRequired="True"
+                Switch="manifest">
+                <StringProperty.Name>
+                    <sys:String>
+                        Manifest
+                    </sys:String>
+                </StringProperty.Name>
+                <StringProperty.Description>
+                    <sys:String>
+                        The path to the image manifest to use to create/update the code wrapper.
+                    </sys:String>
+                </StringProperty.Description>
+                <StringProperty.DisplayName>
+                    <sys:String>
+                        Manifest
+                    </sys:String>
+                </StringProperty.DisplayName>
+            </StringProperty>
+
+            <EnumProperty
+                Name="Language"
+                Description="The language in which the code wrapper is written. Valid Values: CPP, C++, CS, CSharp, C#, VB, or VSCT. The values are case-insensitive.  For VSCT, the /monikerClass, /classAccess, and /namespace options are ignored."
+                Switch="/language">
+                <EnumValue Name="CPP" DisplayName="CPP" />
+                <EnumValue Name="C++" DisplayName="C++" />
+                <EnumValue Name="CS" DisplayName="CS" />
+                <EnumValue Name="CSharp" DisplayName="C#" />
+                <EnumValue Name="VSCT" DisplayName="VSCT" />
+
+            </EnumProperty>
+
+            <StringProperty
+                Name="MonikerClass"
+                Description="The name of the moniker file output by the tool. This is ignored for the VSCT language. Default: [Manifest Path]\MyMonikers.[Lang Ext] Note: For CPP, only .h files are generated."
+                DisplayName="Moniker Class"
+                Switch="monikerClass" />
+
+            <StringProperty
+                Name="ImageIdClass"
+                Description="The name of the moniker file output by the tool. This is ignored for the VSCT language. Default: [Manifest Path]\MyMonikers.[Lang Ext] Note: For CPP, only .h files are generated."
+                DisplayName="Image Id Class"
+                Switch="imageIdClass" />
+
+            <EnumProperty
+                Name="ClassAccess"
+                Description="The access modifier for the image ids and monikers classes. Make sure the access modifier is valid for the given language. This is ignored for the VSCT language. Default: Public"
+                DisplayName="Class Access"
+                Switch="classAccess"
+                SwitchPrefix="/">
+                <EnumValue
+                    Name="Public"
+                    DisplayName="Public"
+                    IsDefault="True" />
+                <EnumValue Name="Internal" DisplayName="Internal" />
+            </EnumProperty>
+
+            <StringProperty
+                Name="Namespace"
+                Default="MyImages"
+                Description="The namespace defined in the code wrapper. This is ignored for the VSCT language."
+                DisplayName="Namespace"
+                Switch="namespace"
+                SwitchPrefix="/" />
+
+
+        </Rule.Properties>
+
+
+    </Rule>
+
+
+</ProjectSchemaDefinitions>
+

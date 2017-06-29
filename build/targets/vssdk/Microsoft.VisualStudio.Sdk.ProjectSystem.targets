@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+***********************************************************************************************
+Microsoft.VisualStudio.Sdk.ProjectSystem.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) Ollon, LLC. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineCommonExtensibilityItemSchemas Condition="'$(DefineCommonExtensibilityItemSchemas)' == ''">true</DefineCommonExtensibilityItemSchemas>
+    <DefineCommonExtensibilityCapabilities Condition="'$(DefineCommonExtensibilityCapabilities)' == ''">true</DefineCommonExtensibilityCapabilities>
+    <DefineCommonExtensibilityReferenceSchemas Condition="'$(DefineCommonExtensibilityReferenceSchemas)' == ''">true</DefineCommonExtensibilityReferenceSchemas>
+  </PropertyGroup>
+
+
+  <ItemGroup Condition="'$(DefineCommonExtensibilityItemSchemas)' == 'true'">
+    
+    <!-- VSCTCompile -->
+    <PropertyPageSchema Include="$(ProjectSystemSchemasDirectory)VSCTCompile.Schema.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(ProjectSystemRulesDirectory)Extensibility\VSCTCompile.xaml">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+
+    <!-- VSTEmplate.Schema.xaml -->
+    <PropertyPageSchema Include="$(ProjectSystemSchemasDirectory)VSTemplate.Schema.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(ProjectSystemRulesDirectory)Extensibility\VSTemplate.xaml">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- XamlPropertyRule.Schema.xaml -->
+    <PropertyPageSchema Include="$(ProjectSystemSchemasDirectory)XamlPropertyRule.Schema.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(ProjectSystemRulesDirectory)Extensibility\XamlPropertyRule.xaml">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- EmbeddedResource.Schema.xaml -->
+    <PropertyPageSchema Include="$(ProjectSystemSchemasDirectory)EmbeddedResource.Schema.xaml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(ProjectSystemRulesDirectory)Extensibility\EmbeddedResource.xaml">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+    
+  </ItemGroup>
+
+
+  <ItemGroup Condition="'$(DefineCommonExtensibilityCapabilities)' == 'true'">
+
+    <ProjectCapability Include="AutoGenerateMenuCommandStubClasses"/>
+    
+    
+    
+  </ItemGroup>
+
+
+  <ItemGroup Condition="'$(DefineCommonExtensibilityReferenceSchemas)' == 'true'">
+
+    <PropertyPageSchema Include="$(ProjectSystemRulesDirectory)Extensibility\ResolvedProjectReference.xaml">
+      <Context>ProjectSubscriptionService;BrowseObject</Context>
+    </PropertyPageSchema>
+    
+    
+  </ItemGroup>
+
+
+  <Import Project="$(MSBuildThisFileDirectory)Microsoft.VisualStudio.ProjectSystem.Sdk.GenerateRuleSourceFromXaml.targets"/>
+  
+</Project>

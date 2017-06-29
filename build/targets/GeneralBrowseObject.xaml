@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--  Copyright, Microsoft Corporation, All rights reserved.  -->
+<Rule
+    xmlns="http://schemas.microsoft.com/build/2009/properties"
+    Name="ConfigurationGeneralBrowseObject"
+    Description="General"
+    DisplayName="General"
+    OverrideMode="Replace"
+    PageTemplate="generic">
+
+    <Rule.DataSource>
+        <DataSource
+            HasConfigurationCondition="False"
+            Persistence="ProjectFile"
+            SourceOfDefaultValue="AfterContext" />
+    </Rule.DataSource>
+
+    <!--  Region: Advanced  -->
+
+    <BoolProperty
+        Name="ImportVSSDKTargets"
+        Category="Advanced"
+        Default="False"
+        Description="Specifies if the Microsoft Visual Studio SDK Targets should be imported."
+        DisplayName="Import VSSDK Targets">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <BoolProperty
+        Name="GeneratePkgDefFile"
+        Category="Advanced"
+        Default="False"
+        Description="Specifies if the .pkgdef file will be generated for the output assembly. This value is ignored if the project doesnt have $(ImportVSSDKTargets) set to 'true'"
+        DisplayName="Generate .pkgdef File"
+        Visible="True">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <BoolProperty
+        Name="ProvideCodebase"
+        Category="Advanced"
+        Default="False"
+        Description="When generating the .pkgdef file for a VSPackage, Register the assembly with its Codebase property. This value is ignored if the project doesnt have $(ImportVSSDKTargets) set to 'true'"
+        DisplayName="Provide Codebase">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <BoolProperty
+        Name="ProvideBindingRedirection"
+        Category="Advanced"
+        Default="False"
+        Description="When generating the .pkgdef file for a VSPackage, redirect any previous versions of this assembly to reference this specific version of the assembly."
+        DisplayName="Provide Binding Redirection">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <BoolProperty
+        Name="DeployExtension"
+        Category="Advanced"
+        Default="False"
+        Description="Determines if the resulting .vsix container should deploy to an experimental instance. This value is ignored if the project doesnt have $(ImportVSSDKTargets) set to 'true'"
+        DisplayName="Deploy Extension">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <BoolProperty
+        Name="CreateVsixContainer"
+        Category="Advanced"
+        Default="False"
+        Description="Specifies whether or not to generate an output .vsix zip container. NOTE: Not all VSPackages must produce a .vsix file. One of the more common implementations has a single project that serves as the VSIX Package/Deployment. This value is ignored if the project doesnt have $(ImportVSSDKTargets) set to 'true'"
+        DisplayName="Create Vsix Container">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <BoolProperty
+        Name="EnableDefaultItems"
+        Category="Advanced"
+        Default="True"
+        DisplayName="Enable Default Items"
+        Visible="True">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <BoolProperty
+        Name="DisableImplicitFrameworkReferences"
+        Category="Advanced"
+        Default="True"
+        DisplayName="Disable Implicit References"
+        Visible="True">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <BoolProperty
+        Name="AppendTargetFrameworkToOutputPath"
+        Category="Advanced"
+        Default="True"
+        DisplayName="Append TargetFramework To OutputPath"
+        Visible="True">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <BoolProperty
+        Name="IncludeWpfReferences"
+        Category="Dependencies"
+        Default="False"
+        Description="Specifies whether or not to include implicit Wpf references."
+        DisplayName="Include Wpf References">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <BoolProperty
+        Name="IncludeMSBuildReferences"
+        Category="Dependencies"
+        Default="False"
+        Description="Specifies whether or not to include implicit MSBuild references."
+        DisplayName="Include MSBuild References">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <BoolProperty
+        Name="IncludePowerShellReferences"
+        Category="Dependencies"
+        Default="False"
+        Description="Specifies whether or not to include implicit PowerShell references."
+        DisplayName="Include PowerShell References">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <BoolProperty
+        Name="IncludeMEFV1References"
+        Category="Dependencies"
+        Default="False"
+        Description="Specifies whether or not to include implicit MEF V1 references."
+        DisplayName="Include MEF V1 References">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+    <BoolProperty
+        Name="IncludeBuildOutput"
+        Category="NuGet"
+        Default="True"
+        Description="Include Build Output in NuGet Package?"
+        DisplayName="Include Build Output">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+    <BoolProperty
+        Name="NoPackageAnalysis"
+        Category="NuGet"
+        Default="True"
+        DisplayName="No Package Analysis">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+
+    <StringProperty Name="PackagePath" Category="NuGet">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+        <StringProperty.ValueEditors>
+            <ValueEditor DisplayName="&lt;Edit...&gt;" EditorType="DefaultStringPropertyEditor" />
+        </StringProperty.ValueEditors>
+    </StringProperty>
+
+    <StringProperty Name="PackageOutputPath" Category="NuGet">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+        <StringProperty.ValueEditors>
+            <ValueEditor DisplayName="&lt;Edit...&gt;" EditorType="DefaultStringPropertyEditor" />
+        </StringProperty.ValueEditors>
+    </StringProperty>
+
+
+    <StringProperty Name="OutputPath" Category="General">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+        <StringProperty.ValueEditors>
+            <ValueEditor DisplayName="&lt;Edit...&gt;" EditorType="DefaultStringPropertyEditor" />
+        </StringProperty.ValueEditors>
+    </StringProperty>
+
+    <StringProperty Name="IntermediateOutputPath" Category="General">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+        <StringProperty.ValueEditors>
+            <ValueEditor DisplayName="&lt;Edit...&gt;" EditorType="DefaultStringPropertyEditor" />
+        </StringProperty.ValueEditors>
+    </StringProperty>
+
+
+
+    <!--  EndRegion  -->
+
+
+    <StringProperty
+        Name="ApplicationIcon"
+        DisplayName="Application Icon"
+        Visible="False" />
+    <StringProperty
+        Name="TargetFrameworkMoniker"
+        DisplayName="Target Framework Moniker"
+        Visible="False">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                PersistedName="TargetFrameworkMoniker"
+                Persistence="ProjectFileWithInterception"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="TargetFrameworkMonikers"
+        DisplayName="Target Framework Monikers"
+        ReadOnly="True"
+        Visible="False">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                PersistedName="TargetFrameworkMonikers"
+                Persistence="ProjectFileWithInterception"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="AssemblyName"
+        DisplayName="Assembly Name"
+        Visible="True" />
+    <StringProperty Name="Name" Visible="False" />
+    <StringProperty
+        Name="RootNamespace"
+        DisplayName="Root namespace"
+        Visible="True" />
+    <StringProperty
+        Name="DefaultNamespace"
+        DisplayName="Default namespace"
+        Visible="False">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="false"
+                PersistedName="RootNamespace"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="TargetFrameworks"
+        DisplayName="Target Frameworks"
+        Visible="False">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                PersistedName="TargetFrameworks"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <IntProperty
+        Name="TargetFramework"
+        ReadOnly="True"
+        Visible="False">
+        <IntProperty.DataSource>
+            <DataSource
+                PersistedName="TargetFramework"
+                Persistence="ProjectFileWithInterception"
+                SourceOfDefaultValue="AfterContext" />
+        </IntProperty.DataSource>
+    </IntProperty>
+    <StringProperty Name="OutputName" Visible="False" />
+    <DynamicEnumProperty
+        Name="OutputType"
+        DisplayName="Output Type"
+        EnumProvider="OutputTypeEnumProvider"
+        Visible="False" />
+    <EnumProperty
+        Name="OutputTypeEx"
+        DisplayName="Output Type"
+        Visible="False">
+        <EnumValue Name="winexe" DisplayName="0" />
+        <EnumValue Name="exe" DisplayName="1" />
+        <EnumValue Name="library" DisplayName="2" />
+        <EnumValue Name="appcontainerexe" DisplayName="3" />
+        <EnumValue Name="winmdobj" DisplayName="4" />
+        <EnumProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                PersistedName="OutputTypeEx"
+                Persistence="ProjectFileWithInterception"
+                SourceOfDefaultValue="AfterContext" />
+        </EnumProperty.DataSource>
+    </EnumProperty>
+    <StringProperty
+        Name="StartupObject"
+        DisplayName="Type that contains the entry point"
+        Visible="False" />
+    <StringProperty
+        Name="ApplicationManifest"
+        DisplayName="Application Manifest"
+        Visible="False">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="false"
+                PersistedName="ApplicationManifest"
+                Persistence="ProjectFileWithInterception"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="Win32ResourceFile"
+        DisplayName="Win32 Resource File"
+        Visible="False">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                PersistedName="Win32Resource"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="PreBuildEvent"
+        DisplayName="Pre Build Event"
+        Visible="False" />
+    <StringProperty
+        Name="PostBuildEvent"
+        DisplayName="Post Build Event"
+        Visible="False" />
+    <EnumProperty
+        Name="RunPostBuildEvent"
+        DisplayName="Run Post Build Event"
+        Visible="False">
+        <EnumValue Name="Always" DisplayName="Always" />
+        <EnumValue
+            Name="OnBuildSuccess"
+            DisplayName="On successful build"
+            IsDefault="True" />
+        <EnumValue Name="OnOutputUpdated" DisplayName="When the build updates the project output" />
+    </EnumProperty>
+    <StringProperty
+        Name="ReferencePath"
+        DisplayName="Reference Path"
+        Visible="False" />
+    <StringProperty
+        Name="FileName"
+        DisplayName="Project File"
+        ReadOnly="True">
+        <StringProperty.DataSource>
+            <DataSource
+                PersistedName="MSBuildProjectFile"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="FullPath"
+        DisplayName="Project Folder"
+        ReadOnly="True">
+        <StringProperty.DataSource>
+            <DataSource
+                PersistedName="MSBuildProjectDirectory"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="LocalPath"
+        ReadOnly="True"
+        Visible="False">
+        <StringProperty.DataSource>
+            <DataSource
+                PersistedName="MSBuildProjectDirectory"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+
+    <!--  Package properties  -->
+    <BoolProperty
+        Name="GeneratePackageOnBuild"
+        Category="NuGet"
+        Default="False"
+        DisplayName="Generate Package On Build"
+        Visible="True" />
+    <StringProperty
+        Name="PackageId"
+        DisplayName="Package Id"
+        Visible="False">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Persistence="ProjectFileWithInterception"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="Version"
+        DisplayName="Package Version"
+        Visible="True">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Persistence="ProjectFileOrAssemblyInfo"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="Authors"
+        DisplayName="Authors"
+        Visible="False">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Persistence="ProjectFileWithInterception"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <BoolProperty
+        Name="PackageRequireLicenseAcceptance"
+        Default="False"
+        DisplayName="Package Require License Acceptance"
+        Visible="False" />
+    <StringProperty
+        Name="PackageLicenseUrl"
+        DisplayName="Package License Url"
+        Visible="False" />
+    <StringProperty
+        Name="PackageProjectUrl"
+        DisplayName="Package Project Url"
+        Visible="False" />
+    <StringProperty
+        Name="PackageIconUrl"
+        DisplayName="Package Icon Url"
+        Visible="False" />
+    <StringProperty
+        Name="PackageTags"
+        DisplayName="Package Tags"
+        Visible="False" />
+    <StringProperty
+        Name="PackageReleaseNotes"
+        DisplayName="Release Notes"
+        Visible="False" />
+    <StringProperty
+        Name="RepositoryUrl"
+        DisplayName="Repository Url"
+        Visible="False" />
+    <StringProperty
+        Name="RepositoryType"
+        DisplayName="Repository Type"
+        Visible="False" />
+
+    <!--  AssemblyInfo properties  -->
+    <StringProperty
+        Name="Description"
+        DisplayName="Assembly Description"
+        Visible="False">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Persistence="ProjectFileOrAssemblyInfo"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="Company"
+        DisplayName="Assembly Company"
+        Visible="False">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Persistence="ProjectFileOrAssemblyInfo"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="Product"
+        DisplayName="Product"
+        Visible="False">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Persistence="ProjectFileOrAssemblyInfo"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="Copyright"
+        DisplayName="Copyright"
+        Visible="False">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Persistence="ProjectFileOrAssemblyInfo"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="AssemblyVersion"
+        DisplayName="Assembly Version"
+        Visible="True">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Persistence="ProjectFileOrAssemblyInfo"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="FileVersion"
+        DisplayName="Assembly File Version"
+        Visible="False">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Persistence="ProjectFileOrAssemblyInfo"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+        Name="NeutralLanguage"
+        DisplayName="Neutral Resources Language"
+        Visible="False">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Persistence="ProjectFileOrAssemblyInfo"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+    </StringProperty>
+    <BoolProperty
+        Name="SignAssembly"
+        Category="Cryptography"
+        DisplayName="Sign the assembly"
+        Visible="True">
+        <BoolProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </BoolProperty.DataSource>
+    </BoolProperty>
+    <BoolProperty
+        Name="PublicKey"
+        Category="Cryptography"
+        Description="The Public Key for the Assembly"
+        DisplayName="Public Key"
+        ReadOnly="True"
+        Visible="True" />
+    <BoolProperty
+        Name="PublicKeyToken"
+        Category="Cryptography"
+        Description="The Public Key Token for the Assembly"
+        DisplayName="Public Key Token"
+        ReadOnly="True"
+        Visible="True" />
+    <BoolProperty
+        Name="DelaySign"
+        DisplayName="Delay sign only"
+        Visible="False" />
+    <StringProperty
+        Name="AssemblyOriginatorKeyFile"
+        Category="Cryptography"
+        DisplayName="Strong name key file"
+        Visible="True">
+        <StringProperty.DataSource>
+            <DataSource
+                HasConfigurationCondition="False"
+                Label="Globals"
+                Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext" />
+        </StringProperty.DataSource>
+        <StringProperty.ValueEditors>
+            <ValueEditor DisplayName="&lt;Edit...&gt;" EditorType="DefaultStringPropertyEditor" />
+            <ValueEditor DisplayName="&lt;Browse...&gt;" EditorType="DefaultFilePropertyEditor">
+                <ValueEditor.Metadata>
+                    <NameValuePair Name="Filters" Value="Strong Name Key Files (*.snk)|*.snk" />
+                </ValueEditor.Metadata>
+            </ValueEditor>
+        </StringProperty.ValueEditors>
+    </StringProperty>
+</Rule>
